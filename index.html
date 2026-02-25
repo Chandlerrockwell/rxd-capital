@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RXD Capital — Real Estate Portfolio</title>
+<meta name="description" content="RXD Capital — Value-add multifamily real estate in Los Angeles and Southern California.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+<style>
+:root {
+  --navy: #111827;
+  --navy-deep: #0a0f1a;
+  --navy-mid: #1B2A4A;
+  --steel: #3D5A80;
+  --silver: #C0C8D4;
+  --ice: #7BB8D4;
+  --white: #f8fafc;
+  --white-dim: #e2e8f0;
+  --green: #34d399;
+  --yellow: #fbbf24;
+  --blue-pin: #60a5fa;
+  --gray-pin: #9ca3af;
+  --surface: rgba(255,255,255,0.04);
+  --surface-hover: rgba(255,255,255,0.08);
+  --border: rgba(255,255,255,0.08);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --radius-sm: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--navy-deep);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* NAVIGATION */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.4s, backdrop-filter 0.4s;
+}
+nav.scrolled {
+  background: rgba(10,15,26,0.85);
+  backdrop-filter: blur(24px) saturate(1.4);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+.nav-logo-text {
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.nav-logo-sub {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+.nav-links {
+  display: flex;
+  gap: 8px;
+}
+.nav-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 100px;
+  transition: all 0.25s;
+  letter-spacing: 0.01em;
+}
+.nav-links a:hover, .nav-links a.active {
+  color: var(--text-primary);
+  background: var(--surface-hover);
+}
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 120px 32px 80px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(61,90,128,0.12) 0%, transparent 60%),
+              radial-gradient(ellipse 60% 40% at 80% 80%, rgba(123,184,212,0.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+.skyline-wrap {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.city-glow {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 300px;
+  background: radial-gradient(ellipse 120% 100% at 50% 100%, rgba(61,90,128,0.1) 0%, rgba(123,184,212,0.04) 30%, transparent 70%);
+}
+#starsCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 65%; }
+#skyCanvas { position: absolute; bottom: 0; left: 0; width: 100%; height: 45%; }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px 6px 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+  margin-bottom: 32px;
+  font-weight: 500;
+  animation: fadeUp 0.8s ease both;
+}
+.hero-badge-dot {
+  width: 8px; height: 8px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.hero h1 {
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+  animation: fadeUp 0.8s 0.1s ease both;
+}
+.hero h1 span {
+  background: linear-gradient(135deg, var(--silver) 0%, var(--ice) 50%, var(--steel) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--text-secondary);
+  max-width: 540px;
+  line-height: 1.6;
+  margin-bottom: 48px;
+  animation: fadeUp 0.8s 0.2s ease both;
+}
+
+/* STATS ROW */
+.stats-row {
+  display: flex;
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  animation: fadeUp 0.8s 0.3s ease both;
+}
+.stat-card {
+  background: var(--navy);
+  padding: 28px 36px;
+  text-align: center;
+  min-width: 160px;
+}
+.stat-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+/* SECTION SHARED */
+section { padding: 100px 32px; }
+.section-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--steel);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin-bottom: 16px;
+}
+.section-desc {
+  color: var(--text-secondary);
+  font-size: 16px;
+  line-height: 1.7;
+  max-width: 600px;
+}
+
+/* MAP SECTION */
+#map-section {
+  padding: 60px 32px 100px;
+}
+#map-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto 0;
+  height: 500px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  position: relative;
+}
+#map { width: 100%; height: 100%; }
+.mapboxgl-popup-content {
+  background: var(--navy) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  padding: 0 !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5) !important;
+  overflow: hidden;
+}
+.mapboxgl-popup-tip { border-top-color: var(--navy) !important; }
+.map-popup {
+  width: 260px;
+  cursor: pointer;
+}
+.map-popup img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  background: var(--navy-deep);
+}
+.map-popup-info {
+  padding: 14px 16px;
+}
+.map-popup-address {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.map-popup-meta {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.map-popup-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 8px;
+}
+.map-popup-status .dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+}
+.map-legend {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin-top: 20px;
+}
+.map-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.map-legend-item .dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+
+/* PORTFOLIO GRID */
+#portfolio { max-width: 1200px; margin: 0 auto; }
+.property-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 24px;
+  margin-top: 48px;
+}
+.property-card {
+  background: var(--navy);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.property-card:hover {
+  border-color: rgba(255,255,255,0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+}
+.property-card-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  background: var(--navy-deep);
+}
+.property-card-body { padding: 24px; }
+.property-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+.property-card-name {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.property-card-address {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.status-badge .dot { width: 7px; height: 7px; border-radius: 50%; }
+.status-active { background: rgba(52,211,153,0.1); color: var(--green); }
+.status-active .dot { background: var(--green); }
+.status-renovation { background: rgba(251,191,36,0.1); color: var(--yellow); }
+.status-renovation .dot { background: var(--yellow); }
+.status-listed { background: rgba(96,165,250,0.1); color: var(--blue-pin); }
+.status-listed .dot { background: var(--blue-pin); }
+
+.property-card-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.metric-cell {
+  background: rgba(255,255,255,0.02);
+  padding: 14px 12px;
+  text-align: center;
+}
+.metric-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+.metric-label {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 4px;
+  font-weight: 500;
+}
+.metric-tag {
+  font-size: 9px;
+  color: var(--steel);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+
+/* PROPERTY DETAIL MODAL */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: none;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  padding: 60px 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--navy);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  max-width: 900px;
+  width: 100%;
+  overflow: hidden;
+  animation: modalIn 0.35s ease;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(30px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-hero {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  overflow: hidden;
+}
+.modal-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  background: var(--navy-deep);
+}
+.modal-hero-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 32px;
+  background: linear-gradient(to top, rgba(10,15,26,0.95) 0%, transparent 100%);
+}
+.modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+}
+.modal-close:hover { background: rgba(0,0,0,0.7); }
+
+.modal-body { padding: 32px; }
+
+.modal-meta-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+.modal-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.modal-meta-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
+.modal-meta-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.modal-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.modal-metric {
+  background: var(--navy-deep);
+  padding: 24px 20px;
+  text-align: center;
+}
+.modal-metric-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+.modal-metric-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+.modal-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--steel);
+  margin-bottom: 16px;
+}
+
+.deal-summary {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+/* PHOTO GALLERY */
+.photo-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+  margin-bottom: 32px;
+}
+.photo-gallery img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  background: var(--navy-deep);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.photo-gallery img:hover { transform: scale(1.03); }
+.photo-phase-label {
+  grid-column: 1 / -1;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  padding: 8px 0 4px;
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+.photo-phase-label:first-child { border-top: none; margin-top: 0; }
+
+/* TIMELINE */
+.timeline {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 32px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+.timeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 120px;
+  position: relative;
+}
+.timeline-step::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--border);
+}
+.timeline-step:last-child::after { display: none; }
+.timeline-step.complete::after {
+  background: var(--green);
+}
+.timeline-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--navy-deep);
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  font-size: 12px;
+}
+.timeline-step.complete .timeline-dot {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--navy-deep);
+}
+.timeline-step.active .timeline-dot {
+  border-color: var(--yellow);
+  background: rgba(251,191,36,0.15);
+}
+.timeline-phase {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-top: 10px;
+  text-align: center;
+}
+.timeline-date {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* FOOTER */
+footer {
+  padding: 48px 32px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+footer .legal {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  line-height: 1.7;
+  max-width: 700px;
+  margin: 0 auto;
+}
+footer .brand {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-secondary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  nav { padding: 12px 16px; }
+  .nav-links a { font-size: 13px; padding: 6px 12px; }
+  section { padding: 60px 16px; }
+  .stats-row { flex-direction: column; }
+  .stat-card { padding: 20px 24px; }
+  .property-grid { grid-template-columns: 1fr; }
+  #map-container { height: 350px; }
+  .modal-hero { height: 240px; }
+  .modal-body { padding: 20px; }
+  .modal-metrics-grid { grid-template-columns: 1fr 1fr; }
+  .map-legend { flex-wrap: wrap; justify-content: center; }
+  .hero { padding: 100px 20px 60px; }
+  .hero-sub { font-size: 15px; }
+}
+@media (max-width: 480px) {
+  .property-card-metrics { grid-template-columns: 1fr; }
+  .nav-logo-sub { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav id="main-nav">
+  <a href="#" class="nav-logo">
+    <div>
+      <div class="nav-logo-text">RXD Capital</div>
+      <div class="nav-logo-sub">Real Estate</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="#hero" class="active">Home</a>
+    <a href="#map-section">Map</a>
+    <a href="#portfolio">Portfolio</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="skyline-wrap">
+    <canvas id="starsCanvas"></canvas>
+    <div class="city-glow"></div>
+    <canvas id="skyCanvas"></canvas>
+  </div>
+  <div class="hero-badge" style="position:relative;z-index:2;">
+    <span class="hero-badge-dot"></span>
+    3 Active Investments — Los Angeles & Inglewood
+  </div>
+  <h1 style="position:relative;z-index:2;">Value-Add Multifamily<br><span>Real Estate Portfolio</span></h1>
+  <p class="hero-sub" style="position:relative;z-index:2;">RXD Capital acquires, renovates, and stabilizes small multifamily properties across Los Angeles and Southern California. Transparent returns. Data-driven decisions.</p>
+  <div class="stats-row" style="position:relative;z-index:2;">
+    <div class="stat-card">
+      <div class="stat-value">15</div>
+      <div class="stat-label">Total Units</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">10.7%</div>
+      <div class="stat-label">Best CoC Return</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">$1.9M+</div>
+      <div class="stat-label">Assets Under Mgmt</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">3</div>
+      <div class="stat-label">Active Properties</div>
+    </div>
+  </div>
+</section>
+
+<!-- MAP SECTION -->
+<section id="map-section">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-label fade-in">Interactive Portfolio</div>
+    <div class="section-title fade-in">Property Map</div>
+    <p class="section-desc fade-in">Each pin represents an active investment. Click to explore individual deal performance and project details.</p>
+  </div>
+  <div id="map-container" class="fade-in">
+    <div id="map"></div>
+  </div>
+  <div class="map-legend fade-in">
+    <div class="map-legend-item"><span class="dot" style="background:var(--green)"></span> Stabilized / Active</div>
+    <div class="map-legend-item"><span class="dot" style="background:var(--yellow)"></span> In Renovation</div>
+    <div class="map-legend-item"><span class="dot" style="background:var(--blue-pin)"></span> Listed / On Market</div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="section-label fade-in">Deal History</div>
+  <div class="section-title fade-in">Portfolio Overview</div>
+  <p class="section-desc fade-in">Click any property to explore detailed financials, before & after photos, and the full deal narrative.</p>
+  <div class="property-grid" id="property-grid"></div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" style="max-width:800px;margin:0 auto;">
+  <div class="section-label fade-in">About</div>
+  <div class="section-title fade-in">RXD Capital</div>
+  <div class="deal-summary fade-in" style="margin-top:24px;">
+    RXD Capital is a Los Angeles-based real estate investment firm focused on value-add multifamily properties. We target underperforming and off-market small multifamily assets in high-demand neighborhoods across LA and broader Southern California.<br><br>
+    Our approach is simple: identify properties with untapped potential, execute thoughtful renovations that respect the character of each neighborhood, and bring these assets to life in a way that elevates the community and delivers strong returns to our investors.<br><br>
+    We believe every property has a story that hasn't been told yet. Our job is to find it, unlock it, and create something that residents are proud to call home, neighborhoods benefit from, and our capital partners are rewarded by.
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="max-width:600px;margin:0 auto;">
+  <div class="section-label fade-in">Get in Touch</div>
+  <div class="section-title fade-in">Contact</div>
+  <p class="section-desc fade-in" style="margin-bottom:32px;">For inquiries about our portfolio, partnership opportunities, or broker submissions.</p>
+  <form id="contact-form" class="fade-in" style="display:flex;flex-direction:column;gap:16px;" onsubmit="event.preventDefault();alert('Message sent. Thank you.')">
+    <input type="text" placeholder="Name" required style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;font-size:15px;color:var(--text-primary);font-family:inherit;outline:none;">
+    <input type="email" placeholder="Email" required style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;font-size:15px;color:var(--text-primary);font-family:inherit;outline:none;">
+    <textarea placeholder="Message" rows="4" required style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;font-size:15px;color:var(--text-primary);font-family:inherit;outline:none;resize:vertical;"></textarea>
+    <button type="submit" style="background:var(--steel);color:white;border:none;padding:14px 32px;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.2s;align-self:flex-start;">Send Message</button>
+  </form>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="brand">RXD Capital</div>
+  <p class="legal">
+    Past performance is not indicative of future results. This website is for informational purposes only. Not an offer to sell securities. All figures are summarized; underlying models available upon request. Normalized metrics apply 7% economic vacancy and 5% management unless noted.<br>
+    &copy; 2026 RXD Capital. All rights reserved.
+  </p>
+</footer>
+
+<!-- PROPERTY DETAIL MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script>
+// ===========================================
+// SKYLINE BACKGROUND ANIMATION
+// ===========================================
+(function() {
+  const starsC = document.getElementById('starsCanvas');
+  const sCtx = starsC.getContext('2d');
+  function resizeStars(){starsC.width=starsC.offsetWidth;starsC.height=starsC.offsetHeight}
+  resizeStars(); window.addEventListener('resize',resizeStars);
+
+  const stars=Array.from({length:50},()=>({
+    x:Math.random(),y:Math.random(),r:0.3+Math.random()*1,
+    phase:Math.random()*Math.PI*2,speed:0.2+Math.random()*0.5
+  }));
+  (function drawStars(t){
+    sCtx.clearRect(0,0,starsC.width,starsC.height);
+    stars.forEach(s=>{
+      const op=0.08+0.25*Math.sin(t*0.001*s.speed+s.phase);
+      sCtx.beginPath();
+      sCtx.arc(s.x*starsC.width,s.y*starsC.height,s.r,0,Math.PI*2);
+      sCtx.fillStyle=`rgba(192,200,212,${op})`;
+      sCtx.fill();
+    });
+    requestAnimationFrame(drawStars);
+  })(0);
+
+  const skyC = document.getElementById('skyCanvas');
+  const ctx = skyC.getContext('2d');
+  let W, H;
+  function resizeSky(){W=skyC.width=skyC.offsetWidth;H=skyC.height=skyC.offsetHeight}
+  resizeSky(); window.addEventListener('resize',()=>{resizeSky();generateBuildings()});
+
+  let buildings = [];
+  let mouseX = 0;
+
+  function generateBuildings() {
+    buildings = [];
+    const layers = [
+      { count: 60, minH: 0.15, maxH: 0.55, minW: 8, maxW: 18, opacity: 0.05, color: '61,90,128', speed: 0.2 },
+      { count: 45, minH: 0.2, maxH: 0.7, minW: 10, maxW: 28, opacity: 0.09, color: '27,42,74', speed: 0.5 },
+      { count: 35, minH: 0.12, maxH: 0.4, minW: 18, maxW: 45, opacity: 0.14, color: '13,20,37', speed: 0.8 }
+    ];
+
+    layers.forEach((layer, li) => {
+      let x = -20;
+      for (let i = 0; i < layer.count; i++) {
+        const w = layer.minW + Math.random() * (layer.maxW - layer.minW);
+        const h = (layer.minH + Math.random() * (layer.maxH - layer.minH)) * H;
+        const gap = 2 + Math.random() * 8;
+        const hasSpire = li === 1 && Math.random() > 0.85;
+        const spireH = hasSpire ? 8 + Math.random() * 20 : 0;
+        const windows = [];
+        if (li >= 1) {
+          const cols = Math.floor(w / 5);
+          const rows = Math.floor(h / 8);
+          for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+              if (Math.random() > 0.55) {
+                windows.push({
+                  rx: (c + 0.5) / cols,
+                  ry: (r + 0.5) / rows,
+                  on: Math.random() > 0.3,
+                  flicker: Math.random() * Math.PI * 2,
+                  flickerSpeed: 0.1 + Math.random() * 0.4
+                });
+              }
+            }
+          }
+        }
+        buildings.push({ x, w, h, spireH, windows, layer: li, opacity: layer.opacity, color: layer.color, speed: layer.speed });
+        x += w + gap;
+      }
+    });
+  }
+  generateBuildings();
+
+  function drawSkyline(t) {
+    ctx.clearRect(0, 0, W, H);
+    const parallaxX = mouseX * 0.5;
+    buildings.forEach(b => {
+      const bx = b.x + parallaxX * b.speed;
+      const by = H - b.h;
+      ctx.fillStyle = `rgba(${b.color}, ${b.opacity})`;
+      ctx.fillRect(bx, by, b.w, b.h);
+      if (b.spireH > 0) ctx.fillRect(bx + b.w / 2 - 1, by - b.spireH, 2, b.spireH);
+      b.windows.forEach(win => {
+        if (!win.on) return;
+        const wx = bx + win.rx * b.w;
+        const wy = by + win.ry * b.h;
+        const flicker = 0.5 + 0.5 * Math.sin(t * 0.001 * win.flickerSpeed + win.flicker);
+        const alpha = b.layer === 1 ? 0.08 + 0.12 * flicker : 0.04 + 0.08 * flicker;
+        ctx.fillStyle = `rgba(123,184,212,${alpha})`;
+        ctx.fillRect(wx, wy, 2, 2);
+      });
+    });
+    const grad = ctx.createLinearGradient(0, H - 2, 0, H);
+    grad.addColorStop(0, 'rgba(61,90,128,0.15)');
+    grad.addColorStop(1, 'rgba(61,90,128,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, H - 3, W, 3);
+    requestAnimationFrame(drawSkyline);
+  }
+  requestAnimationFrame(drawSkyline);
+
+  document.addEventListener('mousemove', e => {
+    mouseX = (e.clientX / window.innerWidth - 0.5) * 40;
+  });
+})();
+</script>
+
+<script>
+// ===========================================
+// PROPERTY DATA
+// ===========================================
+const properties = [
+  {
+    id: "5371-louis-pl",
+    name: "5371 Louis Pl",
+    address: "5371 Louis Pl, Los Angeles, CA 90022",
+    type: "10-Unit Multifamily",
+    status: "Active",
+    statusClass: "status-active",
+    statusLabel: "Stabilized",
+    acquisition_date: "2024",
+    purchase_price: 900000,
+    coordinates: [-118.1696, 34.0241],
+    metrics: {
+      primary_label: "Cash-on-Cash",
+      primary_value: "10.5%",
+      secondary_label: "NOI",
+      secondary_value: "$97K",
+      tertiary_label: "Held",
+      tertiary_value: "1.5 yr",
+      projected_or_actual: "actual"
+    },
+    detail_metrics: [
+      { label: "Purchase Price", value: "$900,000" },
+      { label: "Total All-In Capital", value: "$1,058,198" },
+      { label: "NOI (Year 1)", value: "$96,999" },
+      { label: "Cap Rate", value: "10.8%" },
+      { label: "Cash-on-Cash (Yr1)", value: "10.5%" },
+      { label: "Refi Cash-Out", value: "$877,500" },
+      { label: "Post-Refi CoC", value: "33.8%" },
+      { label: "DSCR (Post-Refi)", value: "1.43x" },
+      { label: "Gross Rent", value: "$12,799/mo" },
+      { label: "Market Rent", value: "$16,100/mo" },
+      { label: "Rent Upside", value: "25.8%" },
+      { label: "Expense Ratio", value: "35.3%" }
+    ],
+    hero_photo: "7635923004239488784.JPG",
+    photos_before: [],
+    photos_after: [
+      "7635923004239488784.JPG",
+      "Screenshot_20260224_183018.png",
+      "Screenshot_20260224_183025.png"
+    ],
+    deal_summary: "Acquired a 10-unit Spanish-style multifamily building in East LA at $90K/door — well below replacement cost. The property featured a mix of rent-controlled legacy tenants and units at or near market. We completed targeted renovations including new kitchens with stainless appliances, updated common areas, and deferred maintenance. Year 1 NOI came in at $96,999 on an all-cash basis (10.5% cap rate). Currently refinancing at $900K (6.25%, 30-yr amortization) to return $877,500 in capital — recovering 92% of equity while retaining the asset. Post-refi cash-on-cash return on remaining capital is 33.8%. Significant upside remains with 25.8% rent-to-market gap across the portfolio.",
+    timeline: [
+      { phase: "Acquired", date: "2024", complete: true },
+      { phase: "Renovated", date: "2024", complete: true },
+      { phase: "Stabilized", date: "2024", complete: true },
+      { phase: "Refinancing", date: "2025", complete: false, active: true }
+    ]
+  },
+  {
+    id: "1510-w-52nd-st",
+    name: "1510 W 52nd St",
+    address: "1510 W 52nd St, Los Angeles, CA 90062",
+    type: "Triplex (3 Units)",
+    status: "Listed",
+    statusClass: "status-listed",
+    statusLabel: "On Market",
+    acquisition_date: "2024",
+    purchase_price: 614586,
+    coordinates: [-118.3105, 34.0013],
+    metrics: {
+      primary_label: "Flip ROI",
+      primary_value: "28.2%",
+      secondary_label: "List Price",
+      secondary_value: "$1.03M",
+      tertiary_label: "Status",
+      tertiary_value: "Listed",
+      projected_or_actual: "projected"
+    },
+    detail_metrics: [
+      { label: "Total Capital Invested", value: "$614,586" },
+      { label: "Stabilized Rent", value: "$5,700/mo" },
+      { label: "Annual Cash Flow", value: "$35,282" },
+      { label: "Hold CoC (Normalized)", value: "5.7%" },
+      { label: "List Price", value: "$1,025,000" },
+      { label: "Flip ROI", value: "28.2%" }
+    ],
+    hero_photo: "IMGL3619Edit.JPG",
+    photos_before: [
+      "IMG_7661.JPG",
+      "IMG_7680.JPG",
+      "IMG_7681.JPG",
+      "IMG_7682.JPG",
+      "IMG_7698.JPG"
+    ],
+    photos_after: [
+      "IMGL3610Edit.JPG",
+      "IMGL3619Edit.JPG",
+      "IMGL3636.JPG",
+      "IMGL3690.JPG",
+      "IMGL3717.JPG",
+      "IMGL3753.JPG",
+      "IMGL3793.JPG",
+      "IMGL3799Edit.JPG",
+      "IMGL3812EditEdit.JPG"
+    ],
+    deal_summary: "Acquired this triplex as a fire-damaged, heavily distressed property in South LA. The previous structure had sustained significant fire damage to the exterior, fencing, and one rear unit — along with severe interior hoarding conditions throughout. We executed a full gut renovation across all three units: new kitchens, marble-style bathrooms with frameless glass showers, open-concept living areas, staged interiors, new landscaping with turf, rebuilt fencing, and fresh exterior paint. The property is now fully stabilized with $5,700/mo in rent and listed for sale at $1,025,000. Projected flip ROI of 28.2% (non-annualized). Modeling currently favors a sale over a refinance in this rate environment.",
+    timeline: [
+      { phase: "Acquired", date: "2024", complete: true },
+      { phase: "Renovated", date: "2024", complete: true },
+      { phase: "Stabilized", date: "2025", complete: true },
+      { phase: "Listed", date: "2025", complete: false, active: true }
+    ]
+  },
+  {
+    id: "9132-crenshaw-blvd",
+    name: "9132 Crenshaw Blvd",
+    address: "9132 Crenshaw Blvd, Inglewood, CA 90305",
+    type: "Duplex + ADU (3 Units)",
+    status: "Renovation",
+    statusClass: "status-renovation",
+    statusLabel: "In Renovation",
+    acquisition_date: "2024",
+    purchase_price: 250000,
+    coordinates: [-118.3302, 33.9427],
+    metrics: {
+      primary_label: "Proj. CoC",
+      primary_value: "8.0%",
+      secondary_label: "Proj. Rent",
+      secondary_value: "$7.3K",
+      tertiary_label: "Status",
+      tertiary_value: "Reno",
+      projected_or_actual: "projected"
+    },
+    detail_metrics: [
+      { label: "Partner Capital", value: "$250,000" },
+      { label: "Cash to Close", value: "$131,000" },
+      { label: "Stabilized Rent (Proj.)", value: "$7,300/mo" },
+      { label: "Annual Cash Flow (Proj.)", value: "$20,030" },
+      { label: "Cash-on-Cash (Proj.)", value: "8.01%" },
+      { label: "DSCR (Stabilized)", value: "1.49x" },
+      { label: "Debt (IO Payment)", value: "$3,400/mo" }
+    ],
+    hero_photo: "IMGL0297.JPG",
+    photos_before: [
+      "IMGL0216.JPG",
+      "IMGL0230.JPG",
+      "IMGL0245.JPG",
+      "IMGL0261.JPG",
+      "IMGL0264.JPG",
+      "IMGL0284.JPG",
+      "IMGL0293.JPG",
+      "IMGL0297.JPG",
+      "IMGL0318.JPG",
+      "IMGL0351.JPG"
+    ],
+    photos_after: [],
+    deal_summary: "Acquired a severely distressed duplex in Inglewood with extreme hoarding conditions throughout all units — floor-to-ceiling debris, mold, and deferred maintenance. Business plan: gut-renovate both existing units, then build a new 1-bedroom ADU in the rear to bring total unit count to 3. Post-renovation, we'll refinance into a $680K loan at 6% with 10-year interest-only payments and hold for stabilized cash flow. Partner capital is capped at $250K with a 12% flat preferred return paid first, then 50/50 profit split. Projected stabilized rent of $7,300/mo produces an 8% cash-on-cash return with a 1.49x DSCR.",
+    timeline: [
+      { phase: "Acquired", date: "2024", complete: true },
+      { phase: "Renovating", date: "2025", complete: false, active: true },
+      { phase: "ADU Build", date: "2025", complete: false },
+      { phase: "Stabilize", date: "2026", complete: false }
+    ]
+  }
+];
+
+// ===========================================
+// RENDER PROPERTY CARDS
+// ===========================================
+function renderPropertyGrid() {
+  const grid = document.getElementById('property-grid');
+  grid.innerHTML = properties.map(p => `
+    <div class="property-card" onclick="openModal('${p.id}')">
+      <img class="property-card-img" src="${p.hero_photo}" alt="${p.name}" loading="lazy">
+      <div class="property-card-body">
+        <div class="property-card-header">
+          <div>
+            <div class="property-card-name">${p.name}</div>
+            <div class="property-card-address">${p.type}</div>
+          </div>
+          <span class="status-badge ${p.statusClass}"><span class="dot"></span>${p.statusLabel}</span>
+        </div>
+        <div class="property-card-metrics">
+          <div class="metric-cell">
+            <div class="metric-value">${p.metrics.primary_value}</div>
+            <div class="metric-label">${p.metrics.primary_label}</div>
+            <div class="metric-tag">${p.metrics.projected_or_actual}</div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-value">${p.metrics.secondary_value}</div>
+            <div class="metric-label">${p.metrics.secondary_label}</div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-value">${p.metrics.tertiary_value}</div>
+            <div class="metric-label">${p.metrics.tertiary_label}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===========================================
+// MODAL
+// ===========================================
+function openModal(id) {
+  const p = properties.find(x => x.id === id);
+  if (!p) return;
+
+  const photosHtml = [];
+  if (p.photos_before.length) {
+    photosHtml.push('<div class="photo-phase-label">Before</div>');
+    p.photos_before.forEach(src => photosHtml.push(`<img src="${src}" alt="Before" loading="lazy">`));
+  }
+  if (p.photos_after.length) {
+    photosHtml.push('<div class="photo-phase-label">After</div>');
+    p.photos_after.forEach(src => photosHtml.push(`<img src="${src}" alt="After" loading="lazy">`));
+  }
+
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-hero">
+      <img src="${p.hero_photo}" alt="${p.name}">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div class="modal-hero-overlay">
+        <span class="status-badge ${p.statusClass}" style="margin-bottom:8px"><span class="dot"></span>${p.statusLabel}</span>
+        <h2 style="font-size:28px;font-weight:700;letter-spacing:-0.02em">${p.name}</h2>
+        <p style="color:var(--text-secondary);font-size:14px;margin-top:4px">${p.type} — ${p.address}</p>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-metrics-grid">
+        ${p.detail_metrics.map(m => `
+          <div class="modal-metric">
+            <div class="modal-metric-value">${m.value}</div>
+            <div class="modal-metric-label">${m.label}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="modal-section-title">Deal Summary</div>
+      <div class="deal-summary">${p.deal_summary}</div>
+
+      <div class="modal-section-title">Project Timeline</div>
+      <div class="timeline">
+        ${p.timeline.map(t => `
+          <div class="timeline-step ${t.complete ? 'complete' : ''} ${t.active ? 'active' : ''}">
+            <div class="timeline-dot">${t.complete ? '✓' : ''}</div>
+            <div class="timeline-phase">${t.phase}</div>
+            <div class="timeline-date">${t.date}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      ${photosHtml.length ? `
+        <div class="modal-section-title">Photo Gallery</div>
+        <div class="photo-gallery">${photosHtml.join('')}</div>
+      ` : ''}
+    </div>
+  `;
+
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ===========================================
+// MAP
+// ===========================================
+function initMap() {
+  mapboxgl.accessToken = 'pk.eyJ1IjoiY2hhbmRsZXJyeGQiLCJhIjoiY21tMWs4M2t0MGFobDJxb20zb2x4a3UxOCJ9.43KeHTIEPuFf5bz1adrHOA';
+
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/dark-v11',
+    center: [-118.26, 33.99],
+    zoom: 10.5,
+    attributionControl: false
+  });
+
+  map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+  map.on('load', () => {
+    properties.forEach(p => {
+      const color = p.status === 'Active' ? '#34d399' : p.status === 'Renovation' ? '#fbbf24' : '#60a5fa';
+
+      const el = document.createElement('div');
+      el.style.cssText = `width:18px;height:18px;background:${color};border-radius:50%;border:3px solid rgba(255,255,255,0.9);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.4);transition:transform 0.2s;`;
+      el.onmouseenter = () => el.style.transform = 'scale(1.4)';
+      el.onmouseleave = () => el.style.transform = 'scale(1)';
+
+      const popup = new mapboxgl.Popup({ offset: 25, closeButton: false, maxWidth: '280px' })
+        .setHTML(`
+          <div class="map-popup" onclick="closeAllPopups();openModal('${p.id}')">
+            <img src="${p.hero_photo}" alt="${p.name}">
+            <div class="map-popup-info">
+              <div class="map-popup-address">${p.name}</div>
+              <div class="map-popup-meta">${p.type}</div>
+              <div class="map-popup-status"><span class="dot" style="background:${color}"></span>${p.statusLabel}</div>
+            </div>
+          </div>
+        `);
+
+      new mapboxgl.Marker(el)
+        .setLngLat(p.coordinates)
+        .setPopup(popup)
+        .addTo(map);
+    });
+  });
+}
+
+// ===========================================
+// SCROLL EFFECTS
+// ===========================================
+function handleScroll() {
+  const nav = document.getElementById('main-nav');
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+
+  document.querySelectorAll('.fade-in').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.88) {
+      el.classList.add('visible');
+    }
+  });
+}
+
+// NAV ACTIVE STATE
+function updateActiveNav() {
+  const sections = ['hero', 'map-section', 'portfolio', 'about', 'contact'];
+  const scrollPos = window.scrollY + 200;
+
+  sections.forEach(id => {
+    const section = document.getElementById(id);
+    if (!section) return;
+    const link = document.querySelector(`.nav-links a[href="#${id}"]`);
+    if (!link) return;
+    if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.offsetHeight) {
+      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+      link.classList.add('active');
+    }
+  });
+}
+
+// INIT
+window.addEventListener('scroll', () => { handleScroll(); updateActiveNav(); });
+window.addEventListener('load', () => {
+  renderPropertyGrid();
+  initMap();
+  handleScroll();
+});
+</script>
+</body>
+</html>
