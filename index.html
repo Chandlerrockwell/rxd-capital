@@ -1420,46 +1420,56 @@ document.addEventListener('keydown', e => {
 function initMap() {
   mapboxgl.accessToken = 'pk.eyJ1IjoiY2hhbmRsZXJyeGQiLCJhIjoiY21tMWs4M2t0MGFobDJxb20zb2x4a3UxOCJ9.43KeHTIEPuFf5bz1adrHOA';
 
+  const bounds = new mapboxgl.LngLatBounds();
+  properties.forEach(p => bounds.extend(p.coordinates));
+
   const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/dark-v11',
-    center: [-118.26, 33.99],
-    zoom: 10.5,
+    bounds: bounds,
+    fitBoundsOptions: { padding: 80, maxZoom: 13 },
     attributionControl: false
   });
 
   map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-  map.on('load', () => {
-    const bounds = new mapboxgl.LngLatBounds();
-    properties.forEach(p => bounds.extend(p.coordinates));
-    map.fitBounds(bounds, { padding: 80, maxZoom: 13, duration: 0 });
-    properties.forEach(p => {
-      const color = p.status === 'Active' ? '#34d399' : p.status === 'Renovation' ? '#fbbf24' : '#60a5fa';
+  // Markers do not need the style to finish loading, so add them right away.
+  // Mapbox positions each marker by setting a CSS transform on its root element,
+  // so hover effects go on an inner dot; changing the root's transform makes the pin jump.
+  properties.forEach(p => {
+    const color = p.status === 'Active' ? '#34d399' : p.status === 'Renovation' ? '#fbbf24' : '#60a5fa';
 
-      const el = document.createElement('div');
-      el.style.cssText = `width:18px;height:18px;background:${color};border-radius:50%;border:3px solid rgba(255,255,255,0.9);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.4);transition:transform 0.2s;`;
-      el.onmouseenter = () => el.style.transform = 'scale(1.4)';
-      el.onmouseleave = () => el.style.transform = 'scale(1)';
+    const el = document.createElement('div');
+    el.style.cssText = 'width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;';
+    el.setAttribute('aria-label', p.name);
+    const dot = document.createElement('div');
+    dot.style.cssText = `width:18px;height:18px;background:${color};border-radius:50%;border:3px solid rgba(255,255,255,0.9);box-shadow:0 2px 8px rgba(0,0,0,0.4);transition:transform 0.2s;`;
+    el.appendChild(dot);
+    el.onmouseenter = () => dot.style.transform = 'scale(1.4)';
+    el.onmouseleave = () => dot.style.transform = 'scale(1)';
 
-      const popup = new mapboxgl.Popup({ offset: 25, closeButton: false, maxWidth: '280px' })
-        .setHTML(`
-          <div class="map-popup" onclick="closeAllPopups();openModal('${p.id}')">
-            <img src="${p.hero_photo}" alt="${p.name}">
-            <div class="map-popup-info">
-              <div class="map-popup-address">${p.name}</div>
-              <div class="map-popup-meta">${p.type}</div>
-              <div class="map-popup-status"><span class="dot" style="background:${color}"></span>${p.statusLabel}</div>
-            </div>
+    const popup = new mapboxgl.Popup({ offset: 18, closeButton: false, maxWidth: '280px' })
+      .setHTML(`
+        <div class="map-popup" onclick="closeAllPopups();openModal('${p.id}')">
+          <img src="${p.hero_photo}" alt="${p.name}">
+          <div class="map-popup-info">
+            <div class="map-popup-address">${p.name}</div>
+            <div class="map-popup-meta">${p.type}</div>
+            <div class="map-popup-status"><span class="dot" style="background:${color}"></span>${p.statusLabel}</div>
           </div>
-        `);
+        </div>
+      `);
 
-      new mapboxgl.Marker(el)
-        .setLngLat(p.coordinates)
-        .setPopup(popup)
-        .addTo(map);
-    });
+    new mapboxgl.Marker({ element: el, anchor: 'center' })
+      .setLngLat(p.coordinates)
+      .setPopup(popup)
+      .addTo(map);
   });
+  window._rxdMap = map;
+}
+
+function closeAllPopups() {
+  document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
 }
 
 // ===========================================
