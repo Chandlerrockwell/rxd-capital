@@ -489,6 +489,11 @@ section { padding: 100px 32px; }
   z-index: 10;
 }
 .modal-close:hover { background: rgba(0,0,0,0.7); }
+.modal-hero-hint {
+  position: absolute; top: 16px; left: 16px; z-index: 5; pointer-events: none;
+  padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 500;
+  background: rgba(0,0,0,0.5); backdrop-filter: blur(12px); color: white;
+}
 
 .modal-body { padding: 32px; }
 
@@ -592,6 +597,75 @@ section { padding: 100px 32px; }
   margin-top: 8px;
 }
 .photo-phase-label:first-child { border-top: none; margin-top: 0; }
+.photo-pending {
+  grid-column: 1 / -1;
+  padding: 28px 20px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-tertiary);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+}
+
+/* BEFORE / AFTER COMPARE */
+.ba-compare {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 20px;
+  background: var(--navy-deep);
+  user-select: none;
+}
+.ba-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.ba-before-wrap { position: absolute; inset: 0; clip-path: inset(0 50% 0 0); }
+.ba-handle {
+  position: absolute; top: 0; bottom: 0; left: 50%;
+  width: 2px; background: rgba(255,255,255,0.9);
+  transform: translateX(-1px); pointer-events: none;
+}
+.ba-handle span {
+  position: absolute; top: 50%; left: 50%;
+  width: 36px; height: 36px; border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(10,15,26,0.75); border: 2px solid rgba(255,255,255,0.9);
+  backdrop-filter: blur(6px);
+}
+.ba-handle span::before { content: '\2039\00a0\203A'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; }
+.ba-tag {
+  position: absolute; top: 14px; padding: 5px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  background: rgba(10,15,26,0.7); color: var(--text-primary); pointer-events: none;
+}
+.ba-tag-before { left: 14px; }
+.ba-tag-after { right: 14px; }
+.ba-range {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  opacity: 0; cursor: ew-resize; margin: 0; -webkit-appearance: none; appearance: none;
+}
+
+/* LIGHTBOX */
+.lightbox {
+  position: fixed; inset: 0; z-index: 3000;
+  background: rgba(5,8,14,0.94);
+  display: none; align-items: center; justify-content: center;
+  padding: 48px 16px;
+}
+.lightbox.open { display: flex; }
+.lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: var(--radius-sm); }
+.lightbox-close, .lightbox-nav {
+  position: absolute; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  color: white; border-radius: 50%; width: 44px; height: 44px; font-size: 26px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.lightbox-close { top: 16px; right: 16px; }
+.lightbox-prev { left: 16px; top: 50%; transform: translateY(-50%); }
+.lightbox-next { right: 16px; top: 50%; transform: translateY(-50%); }
+.lightbox-caption {
+  position: absolute; bottom: 16px; left: 0; right: 0; text-align: center;
+  font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-secondary);
+}
 
 /* TIMELINE */
 .timeline {
@@ -742,26 +816,26 @@ footer .brand {
   </div>
   <div class="hero-badge" style="position:relative;z-index:2;">
     <span class="hero-badge-dot"></span>
-    3 Active Investments — Los Angeles & Inglewood
+    4 Featured Investments · Los Angeles & Inglewood
   </div>
   <h1 style="position:relative;z-index:2;">Value-Add Multifamily<br><span>Real Estate Portfolio</span></h1>
   <p class="hero-sub" style="position:relative;z-index:2;">RXD Capital acquires, renovates, and stabilizes small multifamily properties across Los Angeles and Southern California. Transparent returns. Data-driven decisions.</p>
   <div class="stats-row" style="position:relative;z-index:2;">
     <div class="stat-card">
-      <div class="stat-value">15</div>
-      <div class="stat-label">Total Units</div>
+      <div class="stat-value">~150</div>
+      <div class="stat-label">Units Owned</div>
     </div>
     <div class="stat-card">
       <div class="stat-value">10.7%</div>
       <div class="stat-label">Best CoC Return</div>
     </div>
     <div class="stat-card">
-      <div class="stat-value">$1.9M+</div>
-      <div class="stat-label">Assets Under Mgmt</div>
+      <div class="stat-value">~$38M</div>
+      <div class="stat-label">Real Estate Owned</div>
     </div>
     <div class="stat-card">
-      <div class="stat-value">3</div>
-      <div class="stat-label">Active Properties</div>
+      <div class="stat-value">4</div>
+      <div class="stat-label">Featured Deals</div>
     </div>
   </div>
 </section>
@@ -827,6 +901,15 @@ footer .brand {
 <!-- PROPERTY DETAIL MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal" id="modal-content"></div>
+</div>
+
+<!-- PHOTO LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close">&times;</button>
+  <button class="lightbox-nav lightbox-prev" onclick="stepLightbox(-1)" aria-label="Previous photo">&#8249;</button>
+  <img id="lightbox-img" alt="Property photo">
+  <button class="lightbox-nav lightbox-next" onclick="stepLightbox(1)" aria-label="Next photo">&#8250;</button>
+  <div class="lightbox-caption" id="lightbox-caption"></div>
 </div>
 
 <script>
@@ -954,7 +1037,7 @@ const properties = [
     statusLabel: "Stabilized",
     acquisition_date: "2024",
     purchase_price: 900000,
-    coordinates: [-118.1696, 34.0241],
+    coordinates: [-118.15486, 34.019248],
     metrics: {
       primary_label: "Cash-on-Cash",
       primary_value: "10.5%",
@@ -982,6 +1065,11 @@ const properties = [
     photos_before: [],
     photos_after: [
       "7635923004239488784.JPG",
+      "photos/5371-louis-pl/after-01-front.jpg",
+      "photos/5371-louis-pl/after-02-rear-courtyard.jpg",
+      "photos/5371-louis-pl/after-03-living.jpg",
+      "photos/5371-louis-pl/after-04-kitchen.jpg",
+      "photos/5371-louis-pl/after-05-kitchen-bath.jpg",
       "Screenshot_20260224_183018.png",
       "Screenshot_20260224_183025.png"
     ],
@@ -1003,7 +1091,7 @@ const properties = [
     statusLabel: "On Market",
     acquisition_date: "2024",
     purchase_price: 614586,
-    coordinates: [-118.3105, 34.0013],
+    coordinates: [-118.302826, 33.9948],
     metrics: {
       primary_label: "Flip ROI",
       primary_value: "28.2%",
@@ -1026,10 +1114,10 @@ const properties = [
       "IMG_7661.JPG",
       "IMG_7680.JPG",
       "IMG_7681.JPG",
-      "IMG_7682.JPG",
-      "IMG_7698.JPG"
+      "IMG_7682.JPG"
     ],
     photos_after: [
+      "IMG_7698.JPG",
       "IMGL3610Edit.JPG",
       "IMGL3619Edit.JPG",
       "IMGL3636.JPG",
@@ -1058,7 +1146,7 @@ const properties = [
     statusLabel: "In Renovation",
     acquisition_date: "2024",
     purchase_price: 250000,
-    coordinates: [-118.3302, 33.9427],
+    coordinates: [-118.326142, 33.954109],
     metrics: {
       primary_label: "Proj. CoC",
       primary_value: "8.0%",
@@ -1078,6 +1166,7 @@ const properties = [
       { label: "Debt (IO Payment)", value: "$3,400/mo" }
     ],
     hero_photo: "IMGL0297.JPG",
+    compare: ["IMGL0297.JPG", "photos/9132-crenshaw/after-01-rear-duplex.jpg"],
     photos_before: [
       "IMGL0216.JPG",
       "IMGL0230.JPG",
@@ -1090,13 +1179,71 @@ const properties = [
       "IMGL0318.JPG",
       "IMGL0351.JPG"
     ],
-    photos_after: [],
+    photos_after: [
+      "photos/9132-crenshaw/after-01-rear-duplex.jpg",
+      "photos/9132-crenshaw/after-02-side-yard.jpg",
+      "photos/9132-crenshaw/after-03-parking.jpg",
+      "photos/9132-crenshaw/after-04-living.jpg",
+      "photos/9132-crenshaw/after-05-kitchen.jpg",
+      "photos/9132-crenshaw/after-06-bath.jpg"
+    ],
     deal_summary: "Acquired a severely distressed duplex in Inglewood with extreme hoarding conditions throughout all units — floor-to-ceiling debris, mold, and deferred maintenance. Business plan: gut-renovate both existing units, then build a new 1-bedroom ADU in the rear to bring total unit count to 3. Post-renovation, we'll refinance into a $680K loan at 6% with 10-year interest-only payments and hold for stabilized cash flow. Partner capital is capped at $250K with a 12% flat preferred return paid first, then 50/50 profit split. Projected stabilized rent of $7,300/mo produces an 8% cash-on-cash return with a 1.49x DSCR.",
     timeline: [
       { phase: "Acquired", date: "2024", complete: true },
       { phase: "Renovating", date: "2025", complete: false, active: true },
       { phase: "ADU Build", date: "2025", complete: false },
       { phase: "Stabilize", date: "2026", complete: false }
+    ]
+  },
+  {
+    id: "1904-s-robertson-blvd",
+    name: "1904 S Robertson Blvd",
+    address: "1904 S Robertson Blvd, Los Angeles, CA 90034",
+    type: "28-Unit Courtyard Multifamily",
+    status: "Renovation",
+    statusClass: "status-renovation",
+    statusLabel: "In Renovation",
+    acquisition_date: "2026",
+    coordinates: [-118.386492, 34.044223],
+    metrics: {
+      primary_label: "In-Place Rent",
+      primary_value: "$29.5K/mo",
+      secondary_label: "Units",
+      secondary_value: "28",
+      tertiary_label: "Status",
+      tertiary_value: "Reno",
+      projected_or_actual: "at purchase"
+    },
+    detail_metrics: [
+      { label: "Rental Income at Purchase", value: "$29,478/mo" },
+      { label: "Target Rental Income", value: "~$50,000/mo" },
+      { label: "Units", value: "28" },
+      { label: "Stabilized GRM (Proj.)", value: "Sub 8x" },
+      { label: "Stabilized Cap Rate (Proj.)", value: "7%+" }
+    ],
+    hero_photo: "photos/1904-s-robertson/robertson-before-01-street-facade.jpg",
+    photos_before: [
+      "photos/1904-s-robertson/robertson-before-01-street-facade.jpg",
+      "photos/1904-s-robertson/robertson-before-02-street-view.jpg",
+      "photos/1904-s-robertson/robertson-before-03-pool.jpg",
+      "photos/1904-s-robertson/robertson-before-04-courtyard-stairs.jpg",
+      "photos/1904-s-robertson/robertson-before-05-courtyard-entry.jpg",
+      "photos/1904-s-robertson/robertson-before-06-pool-overview.jpg",
+      "photos/1904-s-robertson/robertson-before-07-courtyard-patio.jpg",
+      "photos/1904-s-robertson/robertson-before-08-rear-parking.jpg",
+      "photos/1904-s-robertson/robertson-before-09-aerial.jpg",
+      "photos/1904-s-robertson/robertson-before-10-unit-kitchen.jpg",
+      "photos/1904-s-robertson/robertson-before-11-unit-bath.jpg",
+      "photos/1904-s-robertson/robertson-before-12-unit-living.jpg",
+      "photos/1904-s-robertson/robertson-before-13-laundry.jpg"
+    ],
+    photos_after: [],
+    deal_summary: "Acquired in September 2026, this 28-unit mid-century courtyard community sits on Robertson Boulevard around a central pool, between Beverlywood and Pico-Robertson on the Westside. At purchase the building produced $29,478/mo in rental income, with several vacant units and many in-place rents well below market under the City's rent stabilization rules. The plan: upgrade units as they turn over with new kitchens, baths, flooring, and fixtures and lease them at market; give the exterior facade and courtyard a complete revamp with stucco repair and fresh paint, rebuilt stairways, new courtyard concrete, and upgraded lighting; and secure the property with new front and rear gates, already installed. Our target is roughly $50,000/mo in rental income at stabilization, with a projected sub-8x GRM and a cap rate above 7%.",
+    timeline: [
+      { phase: "Acquired", date: "Sep 2026", complete: true },
+      { phase: "Unit Turns", date: "2026", complete: false, active: true },
+      { phase: "Exterior Reno", date: "2027", complete: false },
+      { phase: "Stabilize", date: "2027", complete: false }
     ]
   }
 ];
@@ -1145,18 +1292,33 @@ function openModal(id) {
   if (!p) return;
 
   const photosHtml = [];
-  if (p.photos_before.length) {
-    photosHtml.push('<div class="photo-phase-label">Before</div>');
-    p.photos_before.forEach(src => photosHtml.push(`<img src="${src}" alt="Before" loading="lazy">`));
+  const hasBefore = p.photos_before.length > 0;
+  const hasAfter = p.photos_after.length > 0;
+  const allPhotos = [...p.photos_before, ...p.photos_after];
+  const thumb = (src, phase) => `<img src="${src}" alt="${p.name} ${phase}" loading="lazy" onclick="openLightbox('${p.id}', ${allPhotos.indexOf(src)})">`;
+  const pending = (phase) => `<div class="photo-pending">${phase} photos coming soon</div>`;
+  if (hasBefore && hasAfter) {
+    photosHtml.push(`
+      <div class="ba-compare" id="ba-compare">
+        <img class="ba-img" src="${(p.compare || [])[1] || p.photos_after[0]}" alt="${p.name} after">
+        <div class="ba-before-wrap" id="ba-before-wrap"><img class="ba-img" src="${(p.compare || [])[0] || p.photos_before[0]}" alt="${p.name} before"></div>
+        <div class="ba-handle" id="ba-handle"><span></span></div>
+        <div class="ba-tag ba-tag-before">Before</div>
+        <div class="ba-tag ba-tag-after">After</div>
+        <input type="range" min="0" max="100" value="50" class="ba-range" aria-label="Drag to compare before and after" oninput="setCompare(this.value)">
+      </div>`);
   }
-  if (p.photos_after.length) {
-    photosHtml.push('<div class="photo-phase-label">After</div>');
-    p.photos_after.forEach(src => photosHtml.push(`<img src="${src}" alt="After" loading="lazy">`));
-  }
+  photosHtml.push('<div class="photo-gallery">');
+  photosHtml.push('<div class="photo-phase-label">Before</div>');
+  photosHtml.push(hasBefore ? p.photos_before.map(src => thumb(src, 'before')).join('') : pending('Before'));
+  photosHtml.push('<div class="photo-phase-label">After</div>');
+  photosHtml.push(hasAfter ? p.photos_after.map(src => thumb(src, 'after')).join('') : pending('After'));
+  photosHtml.push('</div>');
 
   document.getElementById('modal-content').innerHTML = `
     <div class="modal-hero">
-      <img src="${p.hero_photo}" alt="${p.name}">
+      <img src="${p.hero_photo}" alt="${p.name}" style="cursor:zoom-in" onclick="openLightbox('${p.id}', ${Math.max(0, allPhotos.indexOf(p.hero_photo))})">
+      <div class="modal-hero-hint">View all photos</div>
       <button class="modal-close" onclick="closeModal()">&times;</button>
       <div class="modal-hero-overlay">
         <span class="status-badge ${p.statusClass}" style="margin-bottom:8px"><span class="dot"></span>${p.statusLabel}</span>
@@ -1188,10 +1350,8 @@ function openModal(id) {
         `).join('')}
       </div>
 
-      ${photosHtml.length ? `
-        <div class="modal-section-title">Photo Gallery</div>
-        <div class="photo-gallery">${photosHtml.join('')}</div>
-      ` : ''}
+      <div class="modal-section-title">Before &amp; After</div>
+      ${photosHtml.join('')}
     </div>
   `;
 
@@ -1199,12 +1359,57 @@ function openModal(id) {
   document.body.style.overflow = 'hidden';
 }
 
+function setCompare(v) {
+  const wrap = document.getElementById('ba-before-wrap');
+  const handle = document.getElementById('ba-handle');
+  if (!wrap) return;
+  wrap.style.clipPath = `inset(0 ${100 - v}% 0 0)`;
+  handle.style.left = v + '%';
+}
+
+let lbPhotos = [], lbIndex = 0, lbBeforeCount = 0;
+function openLightbox(id, i) {
+  const p = properties.find(x => x.id === id);
+  lbPhotos = [...p.photos_before, ...p.photos_after];
+  lbBeforeCount = p.photos_before.length;
+  lbIndex = i;
+  renderLightbox();
+  document.getElementById('lightbox').classList.add('open');
+}
+function renderLightbox() {
+  document.getElementById('lightbox-img').src = lbPhotos[lbIndex];
+  document.getElementById('lightbox-caption').textContent = `${lbIndex < lbBeforeCount ? 'Before' : 'After'} · ${lbIndex + 1} / ${lbPhotos.length}`;
+}
+function stepLightbox(d) {
+  lbIndex = (lbIndex + d + lbPhotos.length) % lbPhotos.length;
+  renderLightbox();
+}
+(function(){
+  let x0 = null;
+  document.addEventListener('touchstart', e => { if (document.getElementById('lightbox').classList.contains('open')) x0 = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40) stepLightbox(dx < 0 ? 1 : -1);
+  }, { passive: true });
+})();
+function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+
 function closeModal() {
   document.getElementById('modal-overlay').classList.remove('open');
   document.body.style.overflow = '';
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.addEventListener('keydown', e => {
+  const lbOpen = document.getElementById('lightbox').classList.contains('open');
+  if (lbOpen) {
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') stepLightbox(1);
+    if (e.key === 'ArrowLeft') stepLightbox(-1);
+    return;
+  }
+  if (e.key === 'Escape') closeModal();
+});
 
 // ===========================================
 // MAP
@@ -1223,6 +1428,9 @@ function initMap() {
   map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
   map.on('load', () => {
+    const bounds = new mapboxgl.LngLatBounds();
+    properties.forEach(p => bounds.extend(p.coordinates));
+    map.fitBounds(bounds, { padding: 80, maxZoom: 13, duration: 0 });
     properties.forEach(p => {
       const color = p.status === 'Active' ? '#34d399' : p.status === 'Renovation' ? '#fbbf24' : '#60a5fa';
 
