@@ -1053,9 +1053,11 @@ const properties = [
       { label: "NOI (Year 1)", value: "$96,999" },
       { label: "Cap Rate", value: "10.8%" },
       { label: "Cash-on-Cash (Yr1)", value: "10.5%" },
-      { label: "Refi Cash-Out", value: "$877,500" },
-      { label: "Post-Refi CoC", value: "33.8%" },
-      { label: "DSCR (Post-Refi)", value: "1.43x" },
+      { label: "Refi Loan", value: "$950,000" },
+      { label: "Rate (5-Yr IO)", value: "6.125%" },
+      { label: "Capital Returned", value: "89.8%" },
+      { label: "Post-Refi CoC", value: "35.9%" },
+      { label: "DSCR (Post-Refi)", value: "1.67x" },
       { label: "Gross Rent", value: "$12,799/mo" },
       { label: "Market Rent", value: "$16,100/mo" },
       { label: "Rent Upside", value: "25.8%" },
@@ -1073,12 +1075,12 @@ const properties = [
       "Screenshot_20260224_183018.png",
       "Screenshot_20260224_183025.png"
     ],
-    deal_summary: "Acquired a 10-unit Spanish-style multifamily building in East LA at $90K/door — well below replacement cost. The property featured a mix of rent-controlled legacy tenants and units at or near market. We completed targeted renovations including new kitchens with stainless appliances, updated common areas, and deferred maintenance. Year 1 NOI came in at $96,999 on an all-cash basis (10.5% cap rate). Currently refinancing at $900K (6.25%, 30-yr amortization) to return $877,500 in capital — recovering 92% of equity while retaining the asset. Post-refi cash-on-cash return on remaining capital is 33.8%. Significant upside remains with 25.8% rent-to-market gap across the portfolio.",
+    deal_summary: "Acquired a 10-unit Spanish-style multifamily building in East LA at $90K/door — well below replacement cost. The property featured a mix of rent-controlled legacy tenants and units at or near market. We completed targeted renovations including new kitchens with stainless appliances, updated common areas, and deferred maintenance. Year 1 NOI came in at $96,999 on an all-cash basis (10.5% cap rate). We then refinanced into a $950,000 loan at 6.125%, interest-only for 5 years, returning about 90% of our invested capital while keeping the asset. Post-refi, the property covers debt service 1.67x and produces a 35.9% cash-on-cash return on the capital that remains in the deal. Significant upside remains with 25.8% rent-to-market gap across the portfolio.",
     timeline: [
       { phase: "Acquired", date: "2024", complete: true },
       { phase: "Renovated", date: "2024", complete: true },
       { phase: "Stabilized", date: "2024", complete: true },
-      { phase: "Refinancing", date: "2025", complete: false, active: true }
+      { phase: "Refinanced", date: "2026", complete: true }
     ]
   },
   {
@@ -1086,28 +1088,29 @@ const properties = [
     name: "1510 W 52nd St",
     address: "1510 W 52nd St, Los Angeles, CA 90062",
     type: "Triplex (3 Units)",
-    status: "Listed",
-    statusClass: "status-listed",
-    statusLabel: "On Market",
+    status: "Active",
+    statusClass: "status-active",
+    statusLabel: "Stabilized",
     acquisition_date: "2024",
     purchase_price: 614586,
     coordinates: [-118.302826, 33.9948],
     metrics: {
-      primary_label: "Flip ROI",
-      primary_value: "28.2%",
-      secondary_label: "List Price",
-      secondary_value: "$1.03M",
-      tertiary_label: "Status",
-      tertiary_value: "Listed",
-      projected_or_actual: "projected"
+      primary_label: "Capital Returned",
+      primary_value: "73.2%",
+      secondary_label: "Rent",
+      secondary_value: "$5.7K/mo",
+      tertiary_label: "DSCR",
+      tertiary_value: "1.09x",
+      projected_or_actual: "actual"
     },
     detail_metrics: [
       { label: "Total Capital Invested", value: "$614,586" },
       { label: "Stabilized Rent", value: "$5,700/mo" },
-      { label: "Annual Cash Flow", value: "$35,282" },
-      { label: "Hold CoC (Normalized)", value: "5.7%" },
-      { label: "List Price", value: "$1,025,000" },
-      { label: "Flip ROI", value: "28.2%" }
+      { label: "NOI (Normalized)", value: "$35,282" },
+      { label: "Refi Loan", value: "$450,000" },
+      { label: "Rate (10-Yr Fixed)", value: "6.00%" },
+      { label: "Capital Returned", value: "73.2%" },
+      { label: "DSCR (Post-Refi)", value: "1.09x" }
     ],
     hero_photo: "IMGL3619Edit.JPG",
     photos_before: [
@@ -1128,12 +1131,12 @@ const properties = [
       "IMGL3799Edit.JPG",
       "IMGL3812EditEdit.JPG"
     ],
-    deal_summary: "Acquired this triplex as a fire-damaged, heavily distressed property in South LA. The previous structure had sustained significant fire damage to the exterior, fencing, and one rear unit — along with severe interior hoarding conditions throughout. We executed a full gut renovation across all three units: new kitchens, marble-style bathrooms with frameless glass showers, open-concept living areas, staged interiors, new landscaping with turf, rebuilt fencing, and fresh exterior paint. The property is now fully stabilized with $5,700/mo in rent and listed for sale at $1,025,000. Projected flip ROI of 28.2% (non-annualized). Modeling currently favors a sale over a refinance in this rate environment.",
+    deal_summary: "Acquired this triplex as a fire-damaged, heavily distressed property in South LA. The previous structure had sustained significant fire damage to the exterior, fencing, and one rear unit — along with severe interior hoarding conditions throughout. We executed a full gut renovation across all three units: new kitchens, marble-style bathrooms with frameless glass showers, open-concept living areas, staged interiors, new landscaping with turf, rebuilt fencing, and fresh exterior paint. The property is now fully stabilized with $5,700/mo in rent. Rather than sell, we refinanced into a $450,000 loan at 6.00%, fixed for 10 years on a 30-year amortization, returning 73% of our invested capital while continuing to hold the asset.",
     timeline: [
       { phase: "Acquired", date: "2024", complete: true },
       { phase: "Renovated", date: "2024", complete: true },
       { phase: "Stabilized", date: "2025", complete: true },
-      { phase: "Listed", date: "2025", complete: false, active: true }
+      { phase: "Refinanced", date: "2026", complete: true }
     ]
   },
   {
@@ -1141,9 +1144,9 @@ const properties = [
     name: "9132 Crenshaw Blvd",
     address: "9132 Crenshaw Blvd, Inglewood, CA 90305",
     type: "Duplex + ADU (3 Units)",
-    status: "Renovation",
-    statusClass: "status-renovation",
-    statusLabel: "In Renovation",
+    status: "Active",
+    statusClass: "status-active",
+    statusLabel: "Renovated",
     acquisition_date: "2024",
     purchase_price: 250000,
     coordinates: [-118.326142, 33.954109],
@@ -1153,7 +1156,7 @@ const properties = [
       secondary_label: "Proj. Rent",
       secondary_value: "$7.3K",
       tertiary_label: "Status",
-      tertiary_value: "Reno",
+      tertiary_value: "Renovated",
       projected_or_actual: "projected"
     },
     detail_metrics: [
@@ -1187,11 +1190,11 @@ const properties = [
       "photos/9132-crenshaw/after-05-kitchen.jpg",
       "photos/9132-crenshaw/after-06-bath.jpg"
     ],
-    deal_summary: "Acquired a severely distressed duplex in Inglewood with extreme hoarding conditions throughout all units — floor-to-ceiling debris, mold, and deferred maintenance. Business plan: gut-renovate both existing units, then build a new 1-bedroom ADU in the rear to bring total unit count to 3. Post-renovation, we'll refinance into a $680K loan at 6% with 10-year interest-only payments and hold for stabilized cash flow. Partner capital is capped at $250K with a 12% flat preferred return paid first, then 50/50 profit split. Projected stabilized rent of $7,300/mo produces an 8% cash-on-cash return with a 1.49x DSCR.",
+    deal_summary: "Acquired a severely distressed duplex in Inglewood with extreme hoarding conditions throughout all units — floor-to-ceiling debris, mold, and deferred maintenance. Business plan: gut-renovate both existing units, then build a new 1-bedroom ADU in the rear to bring total unit count to 3. Post-renovation, we'll refinance into a $680K loan at 6% with 10-year interest-only payments and hold for stabilized cash flow. Partner capital is capped at $250K with a 12% flat preferred return paid first, then 50/50 profit split. The renovation of both units is now complete, with crisp white stucco, black trim, and fully modernized interiors. Projected stabilized rent of $7,300/mo produces an 8% cash-on-cash return with a 1.49x DSCR.",
     timeline: [
       { phase: "Acquired", date: "2024", complete: true },
-      { phase: "Renovating", date: "2025", complete: false, active: true },
-      { phase: "ADU Build", date: "2025", complete: false },
+      { phase: "Renovated", date: "2026", complete: true },
+      { phase: "ADU Build", date: "2026", complete: false, active: true },
       { phase: "Stabilize", date: "2026", complete: false }
     ]
   },
