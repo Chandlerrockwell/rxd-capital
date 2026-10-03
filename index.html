@@ -246,20 +246,113 @@ textarea.field { resize: vertical; min-height: 110px; }
 .lb-next { right: 16px; top: 50%; transform: translateY(-50%); }
 .lb-cap { position: absolute; bottom: 18px; left: 0; right: 0; text-align: center; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-2); }
 
+
+/* PAGES */
+.navtabs { display: flex; gap: 4px; }
+.navtab {
+  display: inline-flex; align-items: baseline; gap: 8px; padding: 9px 16px; border-radius: 999px;
+  font-size: 13px; font-weight: 500; color: var(--text-2); transition: background .25s, color .25s;
+}
+.navtab i { font-style: normal; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--text-3); transition: color .25s; }
+.navtab:hover { color: var(--text); }
+.navtab.on { background: var(--panel-2); color: var(--text); }
+.navtab.on i { color: var(--ice); }
+.view {
+  position: fixed; inset: var(--top) 0 0 0; overflow-y: auto; overflow-x: hidden;
+  opacity: 0; visibility: hidden; transform: translateY(18px);
+  transition: opacity .6s var(--ease), transform .6s var(--ease), visibility 0s linear .6s;
+}
+body[data-view="about"] #view-about, body[data-view="portfolio"] #view-portfolio, body[data-view="contact"] #view-contact {
+  opacity: 1; visibility: visible; transform: none; transition: opacity .6s var(--ease), transform .6s var(--ease), visibility 0s;
+}
+#view-portfolio { overflow: hidden; }
+#view-portfolio .app { position: absolute; inset: 0; }
+body:not([data-view="portfolio"]) .deal, body:not([data-view="portfolio"]) .mobile-switch { display: none; }
+.reveal { opacity: 0; transform: translateY(14px); }
+.view.shown .reveal { opacity: 1; transform: none; transition: opacity .8s var(--ease), transform .8s var(--ease); transition-delay: calc(var(--d, 0) * 70ms); }
+.btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; font-size: 14px; font-weight: 600; transition: all .25s var(--ease); }
+.btn span { transition: transform .25s var(--ease); }
+.btn:hover span { transform: translateX(4px); }
+.btn.primary { background: var(--text); color: var(--bg); }
+.btn.primary:hover { background: var(--ice); }
+.btn.ghost { border: 1px solid var(--line-2); color: var(--text); }
+.btn.ghost:hover { background: var(--panel-2); }
+em { font-style: normal; background: linear-gradient(90deg, #c7d2e0, var(--ice)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* INTRO */
+.intro {
+  max-width: 1320px; margin: 0 auto; padding: clamp(32px, 6vh, 72px) 32px 24px;
+  display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(32px, 5vw, 80px); align-items: center;
+  min-height: calc(100vh - var(--top) - 200px);
+}
+.intro h1 { font-size: clamp(34px, 3.9vw, 54px); line-height: 1.04; letter-spacing: -0.035em; font-weight: 600; margin: 18px 0 22px; }
+.lede { font-size: clamp(15px, 1.25vw, 17.5px); line-height: 1.7; color: var(--text-2); max-width: 560px; }
+.intro-ctas { display: flex; gap: 10px; flex-wrap: wrap; margin: 26px 0 30px; }
+.intro-stats { display: flex; gap: 40px; padding-top: 26px; border-top: 1px solid var(--line); }
+.intro-stats b { display: block; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 26px; }
+.intro-stats span { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: .1em; }
+.intro-visual { position: relative; height: clamp(360px, 52vh, 540px); }
+.iv.iv-b figcaption { left: auto; right: 12px; }
+.iv { position: absolute; margin: 0; overflow: hidden; border-radius: 18px; border: 1px solid var(--line-2); box-shadow: 0 30px 60px rgba(0,0,0,.45); background: var(--panel); }
+.iv img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+.iv:hover img { transform: scale(1.04); }
+.iv figcaption { position: absolute; left: 12px; bottom: 12px; padding: 5px 10px; border-radius: 999px; font-size: 11px; font-weight: 500; background: rgba(7,11,20,.7); backdrop-filter: blur(8px); }
+.iv-a { left: 0; top: 0; width: 74%; height: 62%; }
+.iv-b { right: 0; top: 30%; width: 50%; height: 44%; z-index: 2; }
+.iv-c { left: 10%; bottom: 0; width: 48%; height: 34%; z-index: 3; }
+.approach { max-width: 1320px; margin: 0 auto; padding: 18px 32px 40px; display: grid; grid-template-columns: 260px 1fr; gap: 40px; align-items: start; }
+.approach-head p { font-size: 14px; color: var(--text-2); line-height: 1.6; margin-top: 10px; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.astep { padding: 22px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--panel); transition: border-color .3s, transform .3s var(--ease); }
+.astep:hover { border-color: var(--line-2); transform: translateY(-3px); }
+.astep i { font-style: normal; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ice); }
+.astep b { display: block; font-size: 18px; font-weight: 600; margin: 8px 0 6px; }
+.astep p { font-size: 13.5px; line-height: 1.6; color: var(--text-2); }
+
+/* CLOSING */
+.closing { max-width: 1240px; margin: 0 auto; padding: clamp(40px, 9vh, 110px) 32px 40px; display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: start; min-height: calc(100vh - var(--top) - 90px); }
+.closing h2 { font-size: clamp(32px, 4vw, 56px); line-height: 1.06; letter-spacing: -0.035em; font-weight: 600; margin: 18px 0 22px; }
+.audiences { display: grid; gap: 10px; margin-top: 34px; }
+.aud { padding: 16px 18px; border-radius: var(--radius); border: 1px solid var(--line); display: grid; grid-template-columns: 170px 1fr; gap: 16px; align-items: baseline; }
+.aud b { font-size: 14.5px; font-weight: 600; }
+.aud p { font-size: 13.5px; color: var(--text-2); line-height: 1.55; }
+.contact-card { background: var(--panel); border: 1px solid var(--line-2); border-radius: 20px; padding: 30px; box-shadow: 0 30px 60px rgba(0,0,0,.35); }
+select.field { appearance: none; cursor: pointer; }
+.submit span { margin-left: 6px; }
+.closing-foot { max-width: 1240px; margin: 0 auto; padding: 22px 32px 32px; border-top: 1px solid var(--line); display: flex; gap: 32px; justify-content: space-between; font-size: 11px; line-height: 1.6; color: var(--text-3); }
+.closing-foot span:last-child { max-width: 680px; text-align: right; }
+
+@media (max-width: 1000px) {
+  .intro, .closing { grid-template-columns: 1fr; min-height: 0; }
+  .intro-visual { height: 380px; }
+  .approach { grid-template-columns: 1fr; gap: 16px; }
+}
+@media (max-width: 700px) {
+  .navtab i { display: none; }
+  .navtab { padding: 8px 11px; }
+  .intro, .closing, .approach { padding-left: 18px; padding-right: 18px; }
+  .intro-stats { gap: 22px; }
+  .intro-stats b { font-size: 21px; }
+  .intro-visual { height: 300px; }
+  .steps { grid-template-columns: 1fr; }
+  .aud { grid-template-columns: 1fr; gap: 4px; }
+  .closing-foot { flex-direction: column; gap: 10px; padding: 20px 18px 30px; }
+  .closing-foot span:last-child { text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+
 /* MOBILE */
 .mobile-switch { display: none; }
 @media (max-width: 1100px) {
-  .stats .stat:nth-child(n+3) { display: none; }
 }
 @media (max-width: 900px) {
   :root { --top: 58px; }
   .topbar { padding: 0 16px; gap: 10px; }
-  .stats { display: none; }
   .navbtn { padding: 8px 11px; }
   .app { grid-template-columns: 1fr; }
   .rail { border-right: 0; }
-  .mapwrap { position: fixed; inset: var(--top) 0 0 0; z-index: 5; visibility: hidden; }
-  body.show-map .mapwrap { visibility: visible; }
+  .mapwrap { position: absolute; inset: 0; z-index: 5; visibility: hidden; }
+  body.show-map[data-view="portfolio"] .mapwrap { visibility: visible; }
   .list { padding-bottom: 96px; }
   .rail-foot { display: none; }
   .deal { width: 100vw; border-left: 0; }
@@ -281,23 +374,57 @@ textarea.field { resize: vertical; min-height: 110px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
-<body>
+<body data-view="about">
 
 <header class="topbar">
-  <a class="brand" href="#" onclick="closeDeal();return false;" aria-label="RXD Capital home">
+  <a class="brand" href="#about" onclick="go('about');return false;" aria-label="RXD Capital home">
     <b>RXD CAPITAL</b><span>Real Estate</span>
   </a>
-  <div class="stats" aria-label="Firm overview">
-    <div class="stat"><b>~150</b>units owned</div>
-    <div class="stat"><b>~$38M</b>real estate owned</div>
-    <div class="stat"><b>10.7%</b>best CoC</div>
-  </div>
-  <nav class="navbtns">
-    <button class="navbtn" onclick="openSheet('about')">About</button>
-    <button class="navbtn cta" onclick="openSheet('contact')">Contact</button>
+  <nav class="navtabs" aria-label="Pages">
+    <button class="navtab" data-view="about" onclick="go('about')"><i>01</i>About</button>
+    <button class="navtab" data-view="portfolio" onclick="go('portfolio')"><i>02</i>Portfolio</button>
+    <button class="navtab" data-view="contact" onclick="go('contact')"><i>03</i>Contact</button>
   </nav>
 </header>
 
+<!-- VIEW 1: ABOUT / INTRO -->
+<section class="view" id="view-about" aria-label="About RXD Capital">
+  <div class="intro">
+    <div class="intro-copy">
+      <div class="eyebrow reveal" style="--d:0">Value-Add Multifamily · Los Angeles</div>
+      <h1 class="reveal" style="--d:1">We find the buildings Los Angeles overlooked, and give them <em>their next chapter.</em></h1>
+      <p class="lede reveal" style="--d:2">RXD Capital acquires underperforming multifamily properties, renovates them with care for their character, and turns them into safer, better places to live, for residents, for neighborhoods, and for our capital partners.</p>
+      <div class="intro-ctas reveal" style="--d:3">
+        <button class="btn primary" onclick="go('portfolio')">Explore the portfolio <span>&#8594;</span></button>
+        <button class="btn ghost" onclick="go('contact')">Partner with us</button>
+      </div>
+      <div class="intro-stats reveal" style="--d:4">
+        <div><b>~150</b><span>Units owned</span></div>
+        <div><b>~$38M</b><span>Real estate owned</span></div>
+        <div><b>4</b><span>Featured repositionings</span></div>
+      </div>
+    </div>
+    <div class="intro-visual reveal" style="--d:2" aria-hidden="true">
+      <figure class="iv iv-a"><img src="photos/1904-s-robertson/robertson-before-01-street-facade.jpg" alt=""><figcaption>1904 S Robertson · Acquired 2026</figcaption></figure>
+      <figure class="iv iv-b"><img src="IMGL3619Edit.JPG" alt=""><figcaption>1510 W 52nd St</figcaption></figure>
+      <figure class="iv iv-c"><img src="photos/9132-crenshaw/after-01-rear-duplex.jpg" alt=""><figcaption>9132 Crenshaw · Renovated</figcaption></figure>
+    </div>
+  </div>
+  <div class="approach">
+    <div class="approach-head reveal" style="--d:5">
+      <div class="eyebrow">Our approach</div>
+      <p>Simple, repeatable, and hands-on from acquisition to stabilization.</p>
+    </div>
+    <div class="steps">
+      <div class="astep reveal" style="--d:6"><i>01</i><b>Find</b><p>Underperforming and off-market buildings in high-demand LA neighborhoods, bought well below replacement cost.</p></div>
+      <div class="astep reveal" style="--d:7"><i>02</i><b>Reposition</b><p>New kitchens, baths, facades, courtyards, and security, with the original character kept where it matters.</p></div>
+      <div class="astep reveal" style="--d:8"><i>03</i><b>Stabilize</b><p>Lease at market, refinance to return capital to partners, and hold for long-term cash flow.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- VIEW 2: PORTFOLIO -->
+<section class="view" id="view-portfolio" aria-label="Portfolio">
 <main class="app">
   <aside class="rail">
     <div class="rail-head">
@@ -319,6 +446,40 @@ textarea.field { resize: vertical; min-height: 110px; }
     </div>
   </section>
 </main>
+</section>
+
+<!-- VIEW 3: CONTACT / CLOSING -->
+<section class="view" id="view-contact" aria-label="Contact RXD Capital">
+  <div class="closing">
+    <div class="closing-copy">
+      <div class="eyebrow reveal" style="--d:0">Get in touch</div>
+      <h2 class="reveal" style="--d:1">Let's write the <em>next chapter</em> together.</h2>
+      <p class="lede reveal" style="--d:2">Whether you're looking to invest alongside us, sell a building that needs a new owner, or bring us an off-market opportunity, we'd like to hear from you.</p>
+      <div class="audiences">
+        <div class="aud reveal" style="--d:3"><b>Capital partners</b><p>Invest alongside us in value-add multifamily across Los Angeles.</p></div>
+        <div class="aud reveal" style="--d:4"><b>Owners &amp; sellers</b><p>A direct, reliable buyer for buildings that need work.</p></div>
+        <div class="aud reveal" style="--d:5"><b>Brokers</b><p>Send us your off-market and underperforming deals.</p></div>
+      </div>
+    </div>
+    <form id="contact-form" class="contact-card reveal" style="--d:3" onsubmit="event.preventDefault();alert('Message sent. Thank you.')">
+      <div class="eyebrow" style="margin-bottom:16px">Send a message</div>
+      <input class="field" type="text" placeholder="Name" required>
+      <input class="field" type="email" placeholder="Email" required>
+      <select class="field" aria-label="I am a">
+        <option>I'm interested in investing</option>
+        <option>I'd like to sell a property</option>
+        <option>I'm a broker with a deal</option>
+        <option>Something else</option>
+      </select>
+      <textarea class="field" placeholder="Message" required></textarea>
+      <button class="submit" type="submit">Send message <span>&#8594;</span></button>
+    </form>
+  </div>
+  <footer class="closing-foot">
+    <span>&copy; 2026 RXD Capital. All rights reserved.</span>
+    <span>Past performance is not indicative of future results. This website is for informational purposes only and is not an offer to sell securities. Figures are summarized; underlying models available upon request.</span>
+  </footer>
+</section>
 
 <div class="mobile-switch" role="tablist" aria-label="View">
   <button class="on" id="sw-list" onclick="setMobileView('list')">List</button>
@@ -334,33 +495,6 @@ textarea.field { resize: vertical; min-height: 110px; }
   </div>
   <div class="deal-scroll" id="deal-scroll"></div>
 </aside>
-
-<div class="scrim" id="scrim" onclick="closeSheets()"></div>
-<section class="sheet" id="sheet-about" role="dialog" aria-modal="true" aria-label="About RXD Capital">
-  <button class="iconbtn x" onclick="closeSheets()" aria-label="Close">&times;</button>
-  <div class="eyebrow">About</div>
-  <h3>RXD Capital</h3>
-  <p>RXD Capital is a Los Angeles real estate investment firm focused on value-add multifamily. We target underperforming and off-market buildings in high-demand neighborhoods across LA and Southern California.</p>
-  <p>Our approach is simple: find properties with untapped potential, renovate with respect for each building's character, and bring them back to life in a way that residents are proud of, neighborhoods benefit from, and our capital partners are rewarded by.</p>
-  <div class="facts">
-    <div><b>~150</b><span>Units owned</span></div>
-    <div><b>~$38M</b><span>Real estate owned</span></div>
-    <div><b>LA</b><span>Focus market</span></div>
-  </div>
-  <p class="legal">Past performance is not indicative of future results. This website is for informational purposes only and is not an offer to sell securities. Figures are summarized; underlying models available upon request.</p>
-</section>
-<section class="sheet" id="sheet-contact" role="dialog" aria-modal="true" aria-label="Contact RXD Capital">
-  <button class="iconbtn x" onclick="closeSheets()" aria-label="Close">&times;</button>
-  <div class="eyebrow">Get in touch</div>
-  <h3>Contact</h3>
-  <p>For partnership opportunities, investor inquiries, or broker submissions.</p>
-  <form id="contact-form" onsubmit="event.preventDefault();alert('Message sent. Thank you.')">
-    <input class="field" type="text" placeholder="Name" required>
-    <input class="field" type="email" placeholder="Email" required>
-    <textarea class="field" placeholder="Message" required></textarea>
-    <button class="submit" type="submit">Send message</button>
-  </form>
-</section>
 
 <div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()">
   <button class="iconbtn lb-close" onclick="closeLightbox()" aria-label="Close">&times;</button>
@@ -773,7 +907,7 @@ function stepDeal(d) {
   const i = properties.findIndex(p => p.id === current);
   openDeal(properties[(i + d + properties.length) % properties.length].id);
 }
-function closeDeal() {
+function closeDeal(opts = {}) {
   if (!current) return;
   current = null;
   $('deal').classList.remove('open');
@@ -781,20 +915,24 @@ function closeDeal() {
   Object.values(pins).forEach(m => m.getElement().classList.remove('active'));
   renderList();
   resetMap();
-  history.replaceState(null, '', location.pathname);
+  if (!opts.keepHash) history.replaceState(null, '', '#portfolio');
 }
 
 // ===========================================
 // ABOUT / CONTACT SHEETS
 // ===========================================
-function openSheet(name) {
-  closeSheets();
-  $('scrim').classList.add('open');
-  $('sheet-' + name).classList.add('open');
-}
-function closeSheets() {
-  $('scrim').classList.remove('open');
-  document.querySelectorAll('.sheet').forEach(s => s.classList.remove('open'));
+const VIEWS = ['about', 'portfolio', 'contact'];
+function go(view, opts = {}) {
+  if (!VIEWS.includes(view)) view = 'about';
+  if (view !== 'portfolio' && current) closeDeal({ keepHash: true });
+  document.body.dataset.view = view;
+  document.querySelectorAll('.navtab').forEach(t => t.classList.toggle('on', t.dataset.view === view));
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('shown'));
+  const el = $('view-' + view);
+  el.scrollTop = 0;
+  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('shown')));
+  if (view === 'portfolio' && map) setTimeout(() => map.resize(), 60);
+  if (!opts.noHash && location.hash !== '#' + view) history.pushState(null, '', '#' + view);
 }
 
 // ===========================================
@@ -834,7 +972,6 @@ document.addEventListener('keydown', e => {
     if (e.key === 'ArrowLeft') stepLightbox(-1);
     return;
   }
-  if (document.querySelector('.sheet.open')) { if (e.key === 'Escape') closeSheets(); return; }
   if (current) {
     if (e.key === 'Escape') closeDeal();
     if (e.key === 'ArrowRight') stepDeal(1);
@@ -854,14 +991,20 @@ function setMobileView(v) {
 renderFilters();
 renderList();
 try { initMap(); } catch (err) { $('map-fallback').style.display = 'flex'; console.error(err); }
-const startId = location.hash.slice(1);
-if (properties.some(p => p.id === startId)) {
-  if (map) map.once('load', () => openDeal(startId)); else openDeal(startId, { noFly: true });
-}
-window.addEventListener('hashchange', () => {
+function route() {
   const id = location.hash.slice(1);
-  if (properties.some(p => p.id === id) && id !== current) openDeal(id);
-});
+  if (properties.some(p => p.id === id)) {
+    go('portfolio', { noHash: true });
+    if (id !== current) {
+      if (map && !map.loaded()) map.once('load', () => openDeal(id)); else openDeal(id);
+    }
+  } else {
+    go(VIEWS.includes(id) ? id : 'about', { noHash: true });
+  }
+}
+window.addEventListener('popstate', route);
+window.addEventListener('hashchange', route);
+route();
 </script>
 </body>
 </html>
